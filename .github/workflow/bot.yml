@@ -1,0 +1,104 @@
+# name: Telegram Bot
+
+# on:
+#   push:
+#     branches: [ main ]
+#   schedule:
+#     - cron: '*/1 * * * *'  # Запуск каждые 5 минут
+
+# jobs:
+#   run-bot:
+#     runs-on: ubuntu-latest
+#     steps:
+#     - uses: actions/checkout@v3
+#     - uses: actions/setup-node@v3
+#       with:
+#         node-version: '18'
+#     - run: npm install
+#     - run: node src/bot.js
+#       env:
+#         BOT_TOKEN: ${{ secrets.BOT_TOKEN }}
+#         MONGODB_URI: ${{ secrets.MONGODB_URI }}
+
+# name: Run Telegram Bot
+
+# on:
+#   # Запуск при push в main ветку
+#   push:
+#     branches: [ main ]
+#   # Запуск каждые 1 минут
+#   schedule:
+#     - cron: '*/5 * * * *'
+#   # Ручной запуск
+#   workflow_dispatch:
+
+# jobs:
+#   run-bot:
+#     runs-on: ubuntu-latest
+#     timeout-minutes: 58  # Меньше 60 минут лимита
+    
+#     steps:
+#     - name: 📥 Checkout repository
+#       uses: actions/checkout@v4
+      
+#     - name: ⎔ Setup Node.js
+#       uses: actions/setup-node@v4
+#       with:
+#         node-version: '18'
+#         cache: 'npm'
+        
+#     - name: 📦 Install dependencies
+#       run: npm ci
+      
+#     - name: 🚀 Run Telegram Bot
+#       env:
+#         BOT_TOKEN: ${{ secrets.BOT_TOKEN }}
+#       run: npm start
+      
+#     - name: ✅ Complete
+#       if: always()
+#       run: echo "Бот завершил работу"
+
+# with save in json
+
+name: Run Telegram Bot
+
+on:
+  push:
+    branches: [ main ]
+  schedule:
+    - cron: '*/2 * * * *'
+  workflow_dispatch:
+
+jobs:
+  run-bot:
+    runs-on: ubuntu-latest
+    timeout-minutes: 58
+    
+    steps:
+    - name: 📥 Checkout repository
+      uses: actions/checkout@v4
+      with:
+        token: ${{ secrets.GITHUB_TOKEN }}
+        
+    - name: ⎔ Setup Node.js
+      uses: actions/setup-node@v4
+      with:
+        node-version: '18'
+        cache: 'npm'
+        
+    - name: 📦 Install dependencies
+      run: npm ci
+      
+    - name: 🚀 Run Telegram Bot
+      env:
+        BOT_TOKEN: ${{ secrets.BOT_TOKEN }}
+      run: npm start
+      
+    - name: 💾 Commit and push if data changed
+      run: |
+        git config --local user.email "action@github.com"
+        git config --local user.name "GitHub Action"
+        git add bot-data.json
+        git diff --staged --quiet || git commit -m "🤖 Update bot data [skip ci]"
+        git push
