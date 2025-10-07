@@ -61,44 +61,44 @@
 
 # with save in json
 
-name: Run Telegram Bot
+# name: Run Telegram Bot
 
-on:
-  push:
-    branches: [ main ]
-  schedule:
-    - cron: '*/2 * * * *'
-  workflow_dispatch:
+# on:
+#   push:
+#     branches: [ main ]
+#   schedule:
+#     - cron: '*/2 * * * *'
+#   workflow_dispatch:
 
-jobs:
-  run-bot:
-    runs-on: ubuntu-latest
-    timeout-minutes: 58
+# jobs:
+#   run-bot:
+#     runs-on: ubuntu-latest
+#     timeout-minutes: 58
     
-    steps:
-    - name: 📥 Checkout repository
-      uses: actions/checkout@v4
-      with:
-        token: ${{ secrets.GITHUB_TOKEN }}
+#     steps:
+#     - name: 📥 Checkout repository
+#       uses: actions/checkout@v4
+#       with:
+#         token: ${{ secrets.GITHUB_TOKEN }}
         
-    - name: ⎔ Setup Node.js
-      uses: actions/setup-node@v4
-      with:
-        node-version: '18'
-        cache: 'npm'
+#     - name: ⎔ Setup Node.js
+#       uses: actions/setup-node@v4
+#       with:
+#         node-version: '18'
+#         cache: 'npm'
         
-    - name: 📦 Install dependencies
-      run: npm ci
+#     - name: 📦 Install dependencies
+#       run: npm ci
       
-    - name: 🚀 Run Telegram Bot
-      env:
-        BOT_TOKEN: ${{ secrets.BOT_TOKEN }}
-      run: npm start
+#     - name: 🚀 Run Telegram Bot
+#       env:
+#         BOT_TOKEN: ${{ secrets.BOT_TOKEN }}
+#       run: npm start
       
-    - name: 💾 Commit and push if data changed
-      run: |
-        git config --local user.email "action@github.com"
-        git config --local user.name "GitHub Action"
-        git add bot-data.json
-        git diff --staged --quiet || git commit -m "🤖 Update bot data [skip ci]"
-        git push
+#     - name: 💾 Commit and push if data changed
+#       run: |
+#         git config --local user.email "action@github.com"
+#         git config --local user.name "GitHub Action"
+#         git add bot-data.json
+#         git diff --staged --quiet || git commit -m "🤖 Update bot data [skip ci]"
+#         git push
